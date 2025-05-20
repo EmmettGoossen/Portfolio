@@ -1,0 +1,20 @@
+@font-face {
+    font-family: pixel;
+    src: url(ARCADECLASSIC.TTF);
+}
+
+#channel {
+    border-radius: 15px;
+}
+
+#overlay {
+    border-radius: 15px;
+    position: absolute;
+    opacity: 5%;
+    height: 400px;
+    width: 400px;
+}
+
+body {
+    background-color: rgb(39, 40, 34);
+}
