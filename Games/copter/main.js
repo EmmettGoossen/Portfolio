@@ -3,7 +3,6 @@
 const spriteLogic = document.spriteLogic;
 const keyLogic = document.keyLogic;
 const canvas = document.getElementById("channel").getContext("2d");
-var World = new Date();
 
 
   //strings
@@ -74,8 +73,7 @@ rock.sprites.forEach((e) => {
 var satallite ={
   orb: spriteLogic.createSprite(-10,1000),
   sat: spriteLogic.createSprite(360,25),
-  lifetime: 0,
-  isSpawned: false
+  lifetime: 0
 };
 satallite.sat.setAnimation("copter/img/sat.png", 160, 55, 1);
 satallite.sat.boundingBoxType = 'circle';
@@ -89,7 +87,6 @@ menuName.animationLogic.speed = 3;
 menuName.setAnimation("copter/img/title.png", 350, 78, 3);
 //s#3
 function draw() {
-  World = new Date();
   canvas.fillStyle = "#ff6200";
   canvas.fillRect(0,0,400,400);
 
@@ -300,7 +297,7 @@ function resetVals(){
         game.enemiesAreReady = [false,false,false,false,false];
         missile.respawn = true;
         game.blitzBlind = 100;
-        game.time = World.getSeconds();
+        game.time = Date.now()/1000;
         game.background.visible = true;
         player.sprite.x = 200;
         player.sprite.y = 100;
@@ -326,7 +323,7 @@ function gameRun(){
 
   if(player.isAlive){
     movement();
-    game.score = World.getSeconds() - game.time;
+    game.score = Math.floor(Date.now()/1000 - game.time);
   }
   
   spawnEnemies();
@@ -383,13 +380,13 @@ function spawnEnemies(){
   }
 
   rockMain();
-  if(World.getSeconds() - game.time >= 60){
+  if(Date.now()/1000 - game.time >= 60){
     missileMain();
   }
-  if(World.getSeconds() - game.time >= 90){
+  if(Date.now()/1000 - game.time >= 90){
     rock.density = 3;
   }
-  if(World.getSeconds() - game.time >= 120){
+  if(Date.now()/1000 - game.time >= 120){
     satMain();
   }
 }
@@ -436,6 +433,9 @@ function satMain(){
     animateSat();
   }
   beamInteract();
+  if(satallite.lifetime >= 1300){
+    satSwitch();
+  }
 }
 
 function satShoot(){
@@ -460,9 +460,6 @@ function satSpawn(){
 }
 
 function animateSat(){
-  setTimeout(()=>{
-    satSwitch();
-  }, 10000);
   satallite.sat.dy = 0;
   satallite.sat.dr = 3.14*Math.cos(6.28/92*(satallite.lifetime)); //23 frame period w/ range [-46, 46]
   satallite.lifetime++;
@@ -478,17 +475,17 @@ function satSwitch(){
 
 function beamInteract(){
     if(satallite.orb.isTouching(player.sprite)){
-      player.sprite.dx -= (player.sprite.dx*0.5)-satallite.orb.dx*0.15;
-      player.sprite.dy -= player.sprite.dy*0.5-satallite.orb.dy*0.15;
+      player.sprite.dx /= 1.25;
+      player.sprite.dy /= 1.1;
   }
   if(satallite.orb.isTouching(missile.sprite)){
     missile.sprite.dx *= 1.25;
-    missile.sprite.dx *= 1.25;
+    missile.sprite.dy *= 1.25;
   }
-  for(let rockInx = 0;rockInx<rock.length;rockInx++){
+  for(let rockInx = 0; rockInx<rock.length;rockInx++){
     if(satallite.orb.isTouching(rock.sprites[rockInx])){
-      rock.sprites[rockInx].dx += satallite.orb.dx*0.1;
-      rock.sprites[rockInx].dy += satallite.orb.dy*0.1;
+      rock.sprites[rockInx].dx += satallite.orb.dx;
+      rock.sprites[rockInx].dy += satallite.orb.dy;
     }
   }
 }
