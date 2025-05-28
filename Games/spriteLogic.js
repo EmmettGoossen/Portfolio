@@ -98,6 +98,13 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                 globalSpriteData.ctx.translate(sprite.x, sprite.y);
                 globalSpriteData.ctx.rotate((sprite.rot * Math.PI / 180)%360);
 
+                //flip image
+                if(sprite.width < 0 || sprite.height){
+                    globalSpriteData.ctx.scale(sprite.width/Math.abs(sprite.width), sprite.height/Math.abs(sprite.height));
+                }else{
+                    globalSpriteData.ctx.scale(1, 1);
+                }
+
                 //draw image
                 globalSpriteData.ctx.drawImage(
                     sprite.animationLogic.img,
@@ -133,6 +140,11 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                 sprite.animationLogic.frameCount = frames;
 
             //run animation
+            if(sprite.animationLogic.speed <= 0){
+                clearInterval(sprite.animationLogic.nextInterval);
+                return;
+            }
+
             sprite.animationLogic.nextInterval = setInterval(
                 sprite.animationLogic.runAnimation,
                 1000/sprite.animationLogic.speed,
@@ -151,11 +163,16 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
             //order the bounds lexographically
             let box1 = (sprite.boundingBoxType<sprite2.boundingBoxType)?sprite:sprite2;
             let box2 = (box1.boundingBoxType==sprite.boundingBoxType)?sprite2:sprite;
+            let width = Math.abs(sprite.width);
+            let height = Math.abs(sprite.height);
+            let width2 = Math.abs(sprite2.width);
+            let height2 = Math.abs(sprite2.height);
+
 
             switch(box1.boundingBoxType+box2.boundingBoxType){
                 case "boxbox":
                     //check if boxes intersect on both planes
-                    if(sprite.x-sprite.width/2 >= sprite2.x+sprite2.width/2 || sprite.x+sprite.width/2 <= sprite2.x-sprite2.width/2){
+                    if(sprite.x-width/2 >= sprite2.x+width2/2 || sprite.x+width/2 <= sprite2.x-width2/2){
                         return false;
                     }
                     if(sprite.y-sprite.height/2 >= sprite2.y+sprite2.height/2 || sprite.y+sprite.height/2 <= sprite2.y-sprite2.height/2){
