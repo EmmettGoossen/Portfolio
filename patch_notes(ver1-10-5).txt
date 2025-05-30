@@ -1,0 +1,19 @@
++Updated website visuals
+  +Added Blurb box for each game
+    +each game directory contains .html file for Blurb
+  -removed the <hr> and replaced with a div border
+  +changed the top view background color
+  +added header
+  +added animated background on bottom view
+  +added animated buttons for game selection
+
++Added game selection
+  +Updated main.js files to be modular
+    +each file has one master function that sets document.game to include necessary variables
+    +variables are stored in an object "document.game"
+  +added new .js file "blurbReader.js"
+    +blurbReader handles the switching of games, name will be updated later
+
+-Known bugs
+  +keyLogic breaks when in capslock
+  +Rift no longer functions

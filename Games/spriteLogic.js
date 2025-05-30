@@ -98,12 +98,8 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                 globalSpriteData.ctx.translate(sprite.x, sprite.y);
                 globalSpriteData.ctx.rotate((sprite.rot * Math.PI / 180)%360);
 
-                //flip image
-                if(sprite.width < 0 || sprite.height){
-                    globalSpriteData.ctx.scale(sprite.width/Math.abs(sprite.width), sprite.height/Math.abs(sprite.height));
-                }else{
-                    globalSpriteData.ctx.scale(1, 1);
-                }
+                //scale image
+                    globalSpriteData.ctx.scale(sprite.width*sprite.scale/Math.abs(sprite.width), sprite.height*sprite.scale/Math.abs(sprite.height));
 
                 //draw image
                 globalSpriteData.ctx.drawImage(
@@ -112,10 +108,10 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                     sprite.animationLogic.imageY,
                     sprite.animationLogic.spriteWidth,
                     sprite.animationLogic.spriteHeight,
-                    -sprite.width*sprite.scale/2,
-                    -sprite.height*sprite.scale/2,
-                    sprite.width*sprite.scale,
-                    sprite.height*sprite.scale
+                    -sprite.width/2,
+                    -sprite.height/2,
+                    sprite.width,
+                    sprite.height
                     );
                 
                 //rotate image back
@@ -161,21 +157,23 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
         //methods
         isTouching: (sprite2) => {
             //order the bounds lexographically
-            let box1 = (sprite.boundingBoxType<sprite2.boundingBoxType)?sprite:sprite2;
+            let box1 = (sprite.boundingBoxType<=sprite2.boundingBoxType)?sprite:sprite2;
             let box2 = (box1.boundingBoxType==sprite.boundingBoxType)?sprite2:sprite;
-            let width = Math.abs(sprite.width);
-            let height = Math.abs(sprite.height);
-            let width2 = Math.abs(sprite2.width);
-            let height2 = Math.abs(sprite2.height);
+
+            //handle dimention and scale changes
+            let width = Math.abs(box1.width)*box1.scale;
+            let height = Math.abs(box1.height)*box1.scale;
+            let width2 = Math.abs(box2.width)*box2.scale;
+            let height2 = Math.abs(box2.height)*box2.scale;
 
 
             switch(box1.boundingBoxType+box2.boundingBoxType){
                 case "boxbox":
                     //check if boxes intersect on both planes
-                    if(sprite.x-width/2 >= sprite2.x+width2/2 || sprite.x+width/2 <= sprite2.x-width2/2){
+                    if(box1.x-width/2 >= box2.x+width2/2 || box1.x+width/2 <= box2.x-width2/2){
                         return false;
                     }
-                    if(sprite.y-sprite.height/2 >= sprite2.y+sprite2.height/2 || sprite.y+sprite.height/2 <= sprite2.y-sprite2.height/2){
+                    if(box1.y-height/2 >= box2.y+height2/2 || box1.y+height/2 <= box2.y-height2/2){
                         return false;
                     }
                     return true;
@@ -183,9 +181,9 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                     //find closest point to circle center
                     let Xn = Math.max(box1.x-box1.width/2, Math.min(box2.x, box1.x+box1.width/2));
                     let Yn = Math.max(box1.y+box1.height/2, Math.min(box2.y, box1.y+box1.height/2));
-                    let R = Math.max(box2.width, box2.height);
+                    let R = Math.max(width2, height2);
 
-                    if((sprite.x-sprite2.x)**2 + (sprite.y-sprite2.y)**2 <= ((R)/2)**2){
+                    if((box1.x-box2.x)**2 + (box1.y-box2.y)**2 <= ((R)/2)**2){
                         return true;
                     }
 
@@ -193,9 +191,9 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                 case "circlecircle":
                     //if the dist btwn the centers is less than or equal to the sum of the radii
                     let R1 =  Math.max(box1.width, box1.height);
-                    let R2 =  Math.max(box2.width, box2.height);
+                    let R2 =  Math.max(width2, height2);
 
-                    if(((sprite.x-sprite2.x)**2 + (sprite.y-sprite2.y)**2)**0.5 <= (R1/4 + R2/4)){
+                    if(((box1.x-box2.x)**2 + (box1.y-box2.y)**2)**0.5 <= (R1/4 + R2/4)){
                         return true;
                     }
                     return false;
@@ -224,7 +222,7 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
     return sprite;
 },
 
-draw: (canvas)=>{
+draw: (canvas, callback)=>{
     globalSpriteData.ctx = document.getElementById(canvas).getContext("2d");
     let count = 0;
     globalSpriteData.spriteDrawList.forEach((e) => {

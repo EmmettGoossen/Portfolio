@@ -3,11 +3,41 @@
     src: url(ARCADECLASSIC.TTF);
 }
 
-#channel {
+@font-face {
+    font-family: General;
+    src: url(PublicSans.ttf);
+}
+
+
+/*top view*/
+#top-div {
+    margin: 0px;
+    border-bottom-style: solid;
+    border-width: 2px;
+    border-color: rgb(74, 74, 74);
+    padding-bottom: 14px;
+    padding-top: 14px;
+    padding-left: 45px;
+    background-color: #1c1c1c;
+    width: 100%;
+
+}
+
+#header {
+    background-color: rgb(16, 16, 16);
+    color: white;
+    font-family: General;
+    border-bottom: 1px rgb(49, 48, 48) solid;
+    padding-left: 20px;
+}
+
+canvas {
     border-radius: 15px;
 }
 
+/*retro screen overlay*/
 #overlay {
+    margin-bottom: 0px;
     border-radius: 15px;
     position: absolute;
     opacity: 5%;
@@ -15,6 +45,127 @@
     width: 400px;
 }
 
+/*The text blurb to the right of the canvas*/
+
+#blurb-box {
+    font-family: General;
+    float: bottom;
+    vertical-align: text-top;
+    height: 350px;
+    padding-top: 50px;
+}
+
+#blurb-box > h1 {
+    margin: 5px;
+    font-size: 50px;
+    color:goldenrod;
+}
+
+#blurb-box > h2 {
+    margin: 5px;
+    font-size: 20px;
+    color:rgb(174, 38, 198);
+}
+
+#blurb-box > h3 {
+    margin: 5px;
+    font-size: 20px;
+    color:rgb(127, 127, 255);
+}
+
+
+#blurb-box > p {
+    margin: 5px;
+    color:lightgray;
+}
+
+#blurb-box > ul {
+    margin: 5px;
+    position: relative;
+    left: 15px;
+    color:lightgray;
+}
+
+/*general*/
+
+#bottom-view {
+    background-image: url(TunnelBG\(By_Finn_Moeller\).gif);
+    background-color: rgba(0,0,0,0.6);
+    margin-bottom: 0px;
+    background-size: 100% 190%;
+    backdrop-filter:blur(0px);
+    -webkit-backdrop-filter:blur(8px);
+    height: 300px;
+    width: 100%;
+}
+
+html, body
+{
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+}
+
 body {
     background-color: rgb(39, 40, 34);
+}
+
+
+/*button animation by A. Ruiz, lightly modified*/
+
+button {
+  font-weight: 600;
+  font-size: 20px;
+  font-family: General;
+  border: solid 1px rgb(73, 9, 19);
+  color: white;
+  height: 25px;
+  width: 125px;
+  outline: 0;
+  letter-spacing: .08rem;
+  background-color: rgb(172, 27, 51);
+  border-radius: 3px;
+  position: relative;
+  padding-top: 0px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+  margin-left: 15px;
+  
+  &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgb(222, 192, 255);
+      z-index: -1;
+      border-radius: 3px;
+      border: solid 1px rgb(206, 46, 255);
+      transition: all 300ms ease-in-out;
+  }
+}
+button.style-1 {
+  &::after {
+     width: 90%;
+     height: 90%;
+  }
+  &:hover {
+    background-color: pink;
+    color: rgb(255, 63, 63);
+    height: 175px;
+    width: 175px;
+    padding-bottom: 175px;
+    &::after {
+      transition: all 1s ease-in-out;
+      width: 100%;
+      height: 100%;
+      top: 10px;
+      left: 10px;
+    }
+  }
+  /*&:hover > p {
+    position: relative;
+    top: -87.5px;
+  }*/
 }
