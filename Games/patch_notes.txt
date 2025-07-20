@@ -1,0 +1,39 @@
+**Patch notes are formatted in semantic versioning, **
+** each commit gets a deticated patch not slot**
+
+ver2.0.1
++changed the name of several container objects
+  +changed the game host object from "document.game" to "channel"
+  +changed the spriteLogic object from "document.spriteLogic" to "spriteLogic"
+  +changed the keyLogic object from "document.keyLogic" to "keyLogic"
+
++fixed issue where local variables were getting updated instead of their global counter-parts
+
++fixed collision detection to work with scale and properly detect collisions
+  +added debug mode in global sprite data
+
++fixed sprites in rift level data to properly load and function
++updated rift jump height
+
++fixed the issue with keyLogic causing capslock to break inputs
+
+ver1.10.5
++Updated website visuals
+  +Added Blurb box for each game
+    +each game directory contains .html file for Blurb
+  -removed the <hr> and replaced with a div border
+  +changed the top view background color
+  +added header
+  +added animated background on bottom view
+  +added animated buttons for game selection
+
++Added game selection
+  +Updated main.js files to be modular
+    +each file has one master function that sets document.game to include necessary variables
+    +variables are stored in the object "document.game"
+  +added new .js file "blurbReader.js"
+    +blurbReader handles the switching of games, name will be updated later
+
+-Known bugs
+  +keyLogic breaks when in capslock
+  +Rift no longer functions

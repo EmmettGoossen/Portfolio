@@ -34,6 +34,6 @@ function changeGame(event){
   cancelAnimationFrame(document.drawLoop);
   globalSpriteData.spriteDrawList = [];
   document.gameStart[event.target.getAttribute("game")]();
-  document.game.setUp();
-  document.game.draw();
+  channel.setUp();
+  channel.draw();
 }

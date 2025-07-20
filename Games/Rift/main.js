@@ -1,5 +1,5 @@
 function setRift(){
-document.game = {
+channel = {
     game: {
             inLevel: false,
             score: 0,
@@ -24,28 +24,25 @@ document.game = {
         },
 
     setUp: function() {
-        let {game, level, player} = document.game;
-        game.healthSprite.animationLogic.speed = 0;
-        game.healthSprite.setAnimation("Rift/img/health.png", 44, 20, 10);
-        game.portal.setAnimation("Rift/img/portal.png", 88, 160, 8);
-        game.portal.animationLogic.speed = 4;
-        game.ground.forEach((e) => {
+        channel.game.healthSprite.animationLogic.speed = 0;
+        channel.game.healthSprite.setAnimation("Rift/img/health.png", 44, 20, 10);
+        channel.game.portal.setAnimation("Rift/img/portal.png", 88, 160, 8);
+        channel.game.portal.animationLogic.speed = 4;
+        channel.game.ground.forEach((e) => {
             e.setAnimation("Rift/img/floor.png", 400, 90, 1);
         });
 
-        level.boss.setAnimation("Rift/img/corrupted_slime.png", 290, 220, 2);
-        level.boss.animationLogic.speed = 1;
-        level.boss.scale = 1.2;
-        level.book.setAnimation("Rift/img/grimoire.png", 36, 60, 4);
-        level.book.animationLogic.speed = 1.5;
+        channel.level.boss.setAnimation("Rift/img/corrupted_slime.png", 290, 220, 2);
+        channel.level.boss.animationLogic.speed = 1;
+        channel.level.boss.scale = 1.2;
+        channel.level.book.setAnimation("Rift/img/grimoire.png", 36, 60, 4);
+        channel.level.book.animationLogic.speed = 1.5;
 
-        player.sprite.setAnimation("Rift/img/bell.png", 112, 192, 4);
-        player.sprite.animationLogic.speed = 2;
+        channel.player.sprite.setAnimation("Rift/img/bell.png", 112, 192, 4);
+        channel.player.sprite.animationLogic.speed = 2;
     },
 
     draw: function() {
-        let current = document.game;
-        let { game, level, player } = document.game;
 
         canvas.fillStyle = "tan";
         canvas.fillRect(0, 0, 400, 400);
@@ -54,60 +51,60 @@ document.game = {
         canvas.fillRect(-5, 63, 405, 67);
 
         canvas.fillStyle = "black";
-        canvas.fillRect((game.inLevel ? 83:88), 15, 44, 20);
+        canvas.fillRect((channel.game.inLevel ? 83:88), 15, 44, 20);
 
         canvas.fillStyle = "black";
         canvas.font = "20px pixel";
         canvas.fillText("Health: ", 10, 30);
-        canvas.fillText("Grimoires: " + game.score, 10, 50);
-        game.healthSprite.x = (game.inLevel ? player.sprite.x - 95:110);
-        if((player.health+1)%10 == 0){
-            player.health -= 1;
-            game.healthSprite.animationLogic.runAnimation();
+        canvas.fillText("Grimoires: " + channel.game.score, 10, 50);
+        channel.game.healthSprite.x = (channel.game.inLevel ? channel.player.sprite.x - 95:110);
+        if((channel.player.health+1)%10 == 0){
+            channel.player.health -= 1;
+            channel.game.healthSprite.animationLogic.runAnimation();
         }
 
-        current.gravity();
-        current.controls();
+        channel.gravity();
+        channel.controls();
 
-        if(!game.inLevel){
-            game.portal.y = 290;
-            game.walls.forEach(e => { e.dx = 0; });
-            game.ground.forEach(e => { e.dx = 0; });
-            game.walls[0].setAnimation("Rift/img/study.png", 400, 264, 1);
-            level.book.x = 500;
-            level.book.dx = 0;
+        if(!channel.game.inLevel){
+            channel.game.portal.y = 290;
+            channel.game.walls.forEach(e => { e.dx = 0; });
+            channel.game.ground.forEach(e => { e.dx = 0; });
+            channel.game.walls[0].setAnimation("Rift/img/study.png", 400, 264, 1);
+            channel.level.book.x = 500;
+            channel.level.book.dx = 0;
             canvas.font = "20px pixel";
             canvas.fillStyle = "red";
             canvas.fillText("press Enter over the portal to start", 140, 30, 200);
-            level.boss.visible = false;
-            level.bossIsActive = false;
+            channel.level.boss.visible = false;
+            channel.level.bossIsActive = false;
             canvas.save();
             canvas.translate(0, 0);
-            current.study();
+            channel.study();
         }else{
-            game.portal.y = 590;
-            game.walls.forEach(e => {
+            channel.game.portal.y = 590;
+            channel.game.walls.forEach(e => {
                 e.setAnimation("Rift/img/dungeon.png", 400, 264, 1);
             });
 
-            current.relativeVel();
-            current.handleObstacles();
+            channel.relativeVel();
+            channel.handleObstacles();
 
-            if(player.sprite.isTouching(level.book)){
-                game.inLevel = false;
-                player.sprite.x = 200;
-                player.sprite.y = 310;
-                game.score++;
+            if(channel.player.sprite.isTouching(channel.level.book)){
+                channel.game.inLevel = false;
+                channel.player.sprite.x = 200;
+                channel.player.sprite.y = 310;
+                channel.game.score++;
             }
 
             canvas.save();
-            canvas.translate(-(player.sprite.x-200), 0);
+            canvas.translate(-(channel.player.sprite.x-200), 0);
         }
 
         spriteLogic.draw("channel");
 
-        if (player.health <= 0) {
-            game.inLevel = false;
+        if (channel.player.health <= 0) {
+            channel.game.inLevel = false;
             canvas.fillStyle = "black";
             canvas.fillRect(0,0,400,400);
             canvas.fillStyle = "green";
@@ -115,250 +112,231 @@ document.game = {
             canvas.fillText("Game Over!" , 75, 200);
             canvas.font = "17px pixel";
             canvas.fillText("the corruption is still unslain!" ,  105, 215);
-            player.sprite.x = 200;
-        }else if(keyLogic.keyDown("Enter") && player.sprite.isTouching(game.portal)){
-            current.levelSelect(game.score+1); 
+            channel.player.sprite.x = 200;
+        }else if(keyLogic.keyDown("Enter") && channel.player.sprite.isTouching(channel.game.portal)){
+            channel.levelSelect(channel.game.score); 
         }
 
         canvas.restore();
-        document.drawLoop = requestAnimationFrame(current.draw);
+        document.drawLoop = requestAnimationFrame(channel.draw);
     },
 
     handleObstacles: function() {
-        let current = document.game;
-        let { level, player } = current;
-        current.enemyMain();
-        current.fireMain();
-        if(player.sprite.isTouching(level.boss)){
-            player.health -= 1;
+        channel.enemyMain();
+        channel.fireMain();
+        if(channel.player.sprite.isTouching(channel.level.boss)){
+            channel.player.health -= 1;
         } 
     },
 
     relativeVel: function() {
-        let { level, game, player } = document.game;
-        level.book.dx = -(player.sprite.dx);
+        channel.level.book.dx = -(channel.player.sprite.dx);
 
-        level.walls.forEach((e) => { e.dx = -player.sprite.dx; });
-        level.plat.forEach((e) => { e.dx = -player.sprite.dx; });
+        channel.level.walls.forEach((e) => { e.dx = -channel.player.sprite.dx; });
+        channel.level.plat.forEach((e) => { e.dx = -channel.player.sprite.dx; });
 
-        level.enemies.forEach((e) => {
-            e.dx -= player.sprite.dx;
+        channel.level.enemies.forEach((e) => {
+            e.dx -= channel.player.sprite.dx;
         });
         
         for(let inx = 0; inx <= 1;inx++){
-            game.walls[inx].dx = -player.sprite.dx;
-            game.ground[inx].dx = -player.sprite.dx;
+            channel.game.walls[inx].dx = -channel.player.sprite.dx;
+            channel.game.ground[inx].dx = -channel.player.sprite.dx;
             
-            if(game.walls[inx].x <= player.sprite.x - 400){
+            if(channel.game.walls[inx].x <= channel.player.sprite.x - 400){
+                channel.game.walls[inx].x = channel.game.walls[Math.abs(inx-1)].x + 400;
+                channel.game.ground[inx].x = channel.game.walls[Math.abs(inx-1)].x + 400;
+            } else if(channel.game.walls[inx].x >= channel.player.sprite.x + 400) {
 
-                game.walls[Math.abs(inx-1)].x + 400;
-                game.ground[inx].x = game.walls[Math.abs(inx-1)].x + 400;
-            } else if(game.walls[inx].x >= player.sprite.x + 400) {
-
-                game.walls[inx].x = game.walls[Math.abs(inx-1)].x - 400;
-                game.ground[inx].x = game.walls[Math.abs(inx-1)].x - 400;  
+                channel.game.walls[inx].x = channel.game.walls[Math.abs(inx-1)].x - 400;
+                channel.game.ground[inx].x = channel.game.walls[Math.abs(inx-1)].x - 400;  
             }
         }
     },
 
     controls: function() {
-        let current = document.game;
-        let { level, player } = current;
 
         if(keyLogic.keyDown('d')) {
-            player.sprite.dx = 5;
-            player.sprite.width = -112;
+            channel.player.sprite.dx = 5;
+            channel.player.sprite.width = -112;
         } else if(keyLogic.keyDown('a')) {
-            player.sprite.width = 112;
-            player.sprite.dx = -5;
+            channel.player.sprite.width = 112;
+            channel.player.sprite.dx = -5;
         } else {
-            player.sprite.dx = 0;
+            channel.player.sprite.dx = 0;
         }
 
-        if(keyLogic.keyDown(" ") && !player.hasJumped) {
-            player.sprite.dy  = -17;
-            player.hasJumped = true;
+        if(keyLogic.keyDown(" ") && !channel.player.hasJumped) {
+            channel.player.sprite.dy  = -25;
+            channel.player.hasJumped = true;
         }
 
-        for(let i = 0; i < level.walls.length; i++) {
-            current.collide(player.sprite, level.walls[i]);
+        for(let i = 0; i < channel.level.walls.length; i++) {
+            channel.collide(channel.player.sprite, channel.level.walls[i]);
         }
     },
 
     gravity: function() {
-        let current = document.game;
-        let { player } = current;
-        player.sprite.dy += (keyLogic.keyDown(" ") ? 1.25 : 1.5);
-        player.sprite.y += player.sprite.dy;
+        channel.player.sprite.dy += (keyLogic.keyDown(" ") ? 1.25 : 2.5);
+        channel.player.sprite.y += channel.player.sprite.dy;
 
-        if(player.sprite.y >= 310) {
-            player.sprite.y -= player.sprite.dy;
-            player.sprite.dy = 0;
-            player.hasJumped = false;
+        if(channel.player.sprite.y >= 310) {
+            channel.player.sprite.y -= channel.player.sprite.dy;
+            channel.player.sprite.dy = 0;
+            channel.player.hasJumped = false;
         }
 
-        player.sprite.y -= player.sprite.dy;
-        current.platMain();
+        channel.player.sprite.y -= channel.player.sprite.dy;
+        channel.platMain();
     },
 
     platMain: function() {
-        let { game, level, player } = document.game;
 
-        if(!game.inLevel) return;
+        if(!channel.game.inLevel) return;
 
-        for(let platInx = 0; platInx < level.plat.length; platInx++) {
-            player.sprite.y += player.sprite.dy;
-            switch(level.plat[platInx].type) {
+        for(let platInx = 0; platInx < channel.level.plat.length; platInx++) {
+            channel.player.sprite.y += channel.player.sprite.dy;
+            switch(channel.level.plat[platInx].type) {
                 case "floor":
-                    level.plat[platInx].setAnimation("Rift/img/activated_sigil.png", 156, 48, 1);
-                    if(player.sprite.isTouching(level.plat[platInx])) {
-                        player.sprite.y -= player.sprite.dy;
-                        player.sprite.dy = 0;
-                        player.hasJumped = false;
+                    channel.level.plat[platInx].setAnimation("Rift/img/activated_sigil.png", 156, 48, 1);
+                    if(channel.player.sprite.isTouching(channel.level.plat[platInx])) {
+                        console.log(platInx);
+                        channel.player.sprite.y -= channel.player.sprite.dy;
+                        channel.player.sprite.dy = 0;
+                        channel.player.hasJumped = false;
                     }
-                    return;
+                    channel.player.sprite.y -= channel.player.sprite.dy;
+                    continue;
                 case "roof":
-                    level.plat[platInx].setAnimation("Rift/img/inverted_sigil.png", 156, 48, 1);
-                    if(player.sprite.isTouching(level.plat[platInx])) {
-                        player.sprite.y -= player.sprite.dy;
-                        player.sprite.dy = 0;
+                    channel.level.plat[platInx].setAnimation("Rift/img/inverted_sigil.png", 156, 48, 1);
+                    if(channel.player.sprite.isTouching(channel.level.plat[platInx])) {
+                        channel.player.sprite.y -= channel.player.sprite.dy;
+                        channel.player.sprite.dy = 0;
                     }
-                    return;
+                    channel.player.sprite.y -= channel.player.sprite.dy;
+                    continue;
             }
-            player.sprite.y -= player.sprite.dy;
         }
     },
 
     enemyMain: function() {
-        let current = document.game;
-        let { level, player } = current;
-        level.boss.dx = (level.bossIsActive ? 4.5 : 0);
+        channel.level.boss.dx = (channel.level.bossIsActive ? 4.5 : 0);
 
-        for(let enmInx = 0; enmInx < level.enemies.length; enmInx++) {
-            if(level.enemies[enmInx].x < player.sprite.x) {
-                level.enemies[enmInx].dx = 2;
-                level.enemies[enmInx].width = -120;
-            } else if(level.enemies[enmInx].x > player.sprite.x) {
-                level.enemies[enmInx].dx = -2;
-                level.enemies[enmInx].width = 120;
+        for(let enmInx = 0; enmInx < channel.level.enemies.length; enmInx++) {
+            if(channel.level.enemies[enmInx].x < channel.player.sprite.x) {
+                channel.level.enemies[enmInx].dx = 2;
+                channel.level.enemies[enmInx].width = -120;
+            } else if(channel.level.enemies[enmInx].x > channel.player.sprite.x) {
+                channel.level.enemies[enmInx].dx = -2;
+                channel.level.enemies[enmInx].width = 120;
             }
 
-            for(let blocInx = 0; blocInx < level.walls.length; blocInx++) {
-                if(!current.collide(level.enemies[enmInx], level.walls[blocInx], -player.sprite.dx)) {
+            for(let blocInx = 0; blocInx < channel.level.walls.length; blocInx++) {
+                if(!channel.collide(channel.level.enemies[enmInx], channel.level.walls[blocInx], -channel.player.sprite.dx)) {
                     continue;
                 }
-                level.enemies[enmInx].width = -level.enemies[enmInx].width;
+                channel.level.enemies[enmInx].width = -channel.level.enemies[enmInx].width;
             }
 
-            if(player.sprite.isTouching(level.enemies[enmInx])) {
-                player.health--;
+            if(channel.player.sprite.isTouching(channel.level.enemies[enmInx])) {
+                channel.player.health--;
             }
         }
     },
 
     fireMain: function() {
-        let { level, player } = document.game;
-        for(let Inx = 0; Inx < level.fire.length; Inx++) {
-            level.fire[Inx].dx = -player.sprite.dx;
+        for(let Inx = 0; Inx < channel.level.fire.length; Inx++) {
+            channel.level.fire[Inx].dx = -channel.player.sprite.dx;
         }
     },
 
     levelSelect: function(levelNum) {
-        let current = document.game;
         switch(levelNum) {
-            case 0: current.lvl0(); break;
-            case 1: current.lvl1(); break;
-            case 2: current.lvl2(); break;
-            case 3: current.lvl3(); break;
+            case 0: channel.lvl0(); break;
+            case 1: channel.lvl1(); break;
+            case 2: channel.lvl2(); break;
+            case 3: channel.lvl3(); break;
             default:
                 if(keyLogic.keyDown('1')) {
-                    current.lvl0();
+                    channel.lvl0();
                 } else if(keyLogic.keyDown('2')) {
-                    current.lvl1();
+                    channel.lvl1();
                 } else if(keyLogic.keyDown('3')) {
-                    current.lvl2();
+                    channel.lvl2();
                 } else {
-                    current.levelSelect(randomNumber(0,3));
+                    channel.levelSelect(randomNumber(0,3));
                 }
                 break;
         }
     },
 
     study: function() {
-        let current = document.game;
-        let { game, level } = current;
-        game.walls[0].x = 200;
-        game.walls[1].x = 600;
-        game.ground[0].x = 200;
-        game.ground[1].x = 600;
-        current.killSpriteList(level.walls);
-        level.walls = [];
-        current.killSpriteList(level.plat);
-        level.plat = [];
-        current.killSpriteList(level.enemies);
-        level.enemies = [];
+        channel.game.walls[0].x = 200;
+        channel.game.walls[1].x = 600;
+        channel.game.ground[0].x = 200;
+        channel.game.ground[1].x = 600;
+        channel.killSpriteList(channel.level.walls);
+        channel.level.walls = [];
+        channel.killSpriteList(channel.level.plat);
+        channel.level.plat = [];
+        channel.killSpriteList(channel.level.enemies);
+        channel.level.enemies = [];
     },
 
     bookfunct: function(x, y) {
-        document.game.level.book.x = x;
-        document.game.level.book.y = y;
+        channel.level.book.x = x;
+        channel.level.book.y = y;
     },
 
     createWall: function(x, y, isTall) {
-        let level = document.game.level;
-        let inx = level.walls.length;
-        level.walls.push(spriteLogic.createSprite(200,200));
-        level.walls[inx].x = x;
-        level.walls[inx].y = y;
-        level.walls[inx].setAnimation("Rift/img/" + (isTall ? "barrier":"blockade") + ".png", 64, (isTall ? 480:240), 1);
+        let inx = channel.level.walls.length;
+        channel.level.walls.push(spriteLogic.createSprite(200,200));
+        channel.level.walls[inx].x = x;
+        channel.level.walls[inx].y = y;
+        channel.level.walls[inx].setAnimation("Rift/img/" + (isTall ? "barrier":"blockade") + ".png", 64, (isTall ? 480:240), 1);
     },
 
     createPlatform: function(x, y, type) {
-        let level = document.game.level;
-        let inx = level.plat.length;
-        level.plat.push(spriteLogic.createSprite(300,310));
-        level.plat[inx].type = "";
-        level.plat[inx].x = x;
-        level.plat[inx].y = y;
-        level.plat[inx].type = type;
+        let inx = channel.level.plat.length;
+        channel.level.plat.push(spriteLogic.createSprite(300,310));
+        channel.level.plat[inx].type = "";
+        channel.level.plat[inx].x = x;
+        channel.level.plat[inx].y = y;
+        channel.level.plat[inx].type = type;
     },
 
     createFire: function(x, y) {
-        let level = document.game.level;
-        level.fire.push(spriteLogic.createSprite(x, y));
-        level.fire[level.fire.length-1].setAnimation("Rift/img/fire.png", 102, 30, 4);
+        channel.level.fire.push(spriteLogic.createSprite(x, y));
+        channel.level.fire[channel.level.fire.length-1].setAnimation("Rift/img/fire.png", 102, 30, 4);
     },
 
     createEnemy: function(x, y) {
-        let level = document.game.level;
-        let inx = level.enemies.length;
-        level.enemies.push(spriteLogic.createSprite(200,200));
-        level.enemies[inx].setAnimation("Rift/img/corrupted.png");
-        level.enemies[inx].boundingBoxType = "circle";
-        level.enemies[inx].x = x;
-        level.enemies[inx].y = y;
+        let inx = channel.level.enemies.length;
+        channel.level.enemies.push(spriteLogic.createSprite(200,200));
+        channel.level.enemies[inx].setAnimation("Rift/img/corrupted.png", 120, 120, 4);
+        channel.level.enemies[inx].boundingBoxType = "circle";
+        channel.level.enemies[inx].x = x;
+        channel.level.enemies[inx].y = y;
     },
 
     lvl0: function() {
-        let current = document.game;
-        let { player } = current;
-        player.sprite.x = 200;
-        current.bookfunct(2180, 170);
-        current.createEnemy(580, 310);
-        current.createEnemy(1880, 310);
-        current.createEnemy(2180, 310);
-        current.createWall(0, 280, true);
-        current.createWall(485, 330, false);
-        current.createWall(1085, 330, false);
-        current.createWall(1380, 85, false);
-        current.createWall(1580, 360, false);
-        current.createWall(2280, 280, true);
-        current.createPlatform(400, 280, "floor");
-        current.createPlatform(785, 278, "floor");
-        current.createPlatform(1880, 260, "floor");
-        current.createPlatform(2180, 260, "floor");
-        current.createPlatform(1480, 310, "floor");
-        current.game.inLevel = true;
+        channel.player.sprite.x = 200;
+        channel.bookfunct(2180, 170);
+        channel.createEnemy(580, 310);
+        channel.createEnemy(1880, 310);
+        channel.createEnemy(2180, 310);
+        channel.createWall(0, 280, true);
+        channel.createWall(485, 330, false);
+        channel.createWall(1085, 330, false);
+        channel.createWall(1380, 85, false);
+        channel.createWall(1580, 360, false);
+        channel.createWall(2280, 280, true);
+        channel.createPlatform(400, 280, "floor");
+        channel.createPlatform(785, 278, "floor");
+        channel.createPlatform(1880, 260, "floor");
+        channel.createPlatform(2180, 260, "floor");
+        channel.createPlatform(1480, 310, "floor");
+        channel.game.inLevel = true;
     },
 
     lvl1: function() {
@@ -381,7 +359,7 @@ document.game = {
             return false;
         }
         sprite.x -= sprite.dx;
-        sprite.dx = -speed;
+        sprite.dx = speed;
         return true;
     },
 

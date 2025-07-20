@@ -1,10 +1,11 @@
 //make a sudo library
 let globalSpriteData = {
     ctx: null, //host canvas element
-    spriteDrawList: [] //array holiding all sprite.draw callbacks
+    spriteDrawList: [], //array holiding all sprite.draw callbacks
+    debug: false //boolean to show collisionBox
 };
 
-document.spriteLogic = {
+spriteLogic = {
 
     globalSpriteData: null,
 
@@ -33,6 +34,7 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
 
         //bounding box data
         boundingBoxType: "box",
+        collisionsEnabled: true,
 
         //animation object
         animationLogic: {
@@ -116,6 +118,32 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                 
                 //rotate image back
                 globalSpriteData.ctx.restore();
+
+                    //run debug
+                if(globalSpriteData.debug){
+                    sprite.animationLogic.debug();
+                }
+            },
+            debug: () => {
+                let temp = globalSpriteData.ctx.strokeStyle;
+                let tempWidth = globalSpriteData.ctx.lineWidth;
+                globalSpriteData.ctx.strokeStyle = "rgb(0,255,0)";
+                globalSpriteData.ctx.lineWidth = 1
+                switch(sprite.boundingBoxType){
+                    case "box":
+                        let cornerX = sprite.x-sprite.width*sprite.scale/2;
+                        let cornerY = sprite.y-sprite.height*sprite.scale/2;
+                        globalSpriteData.ctx.strokeRect(cornerX, cornerY, sprite.width*sprite.scale, sprite.height*sprite.scale);
+                        break;
+                    case "circle":
+                        let radius = Math.max(sprite.width, sprite.height)/2;
+                        globalSpriteData.ctx.beginPath();
+                        globalSpriteData.ctx.arc(sprite.x, sprite.y, radius*sprite.scale, 0, 6.28318);
+                        globalSpriteData.ctx.stroke();
+                }
+                
+                globalSpriteData.ctx.strokeStyle = temp;
+                globalSpriteData.ctx.lineWidth = tempWidth;
             }
         },//animationLogic end 
 
@@ -156,6 +184,11 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
 
         //methods
         isTouching: (sprite2) => {
+            //exit when col. disabled
+            if(!sprite.collisionsEnabled){
+                return false;
+            }
+
             //order the bounds lexographically
             let box1 = (sprite.boundingBoxType<=sprite2.boundingBoxType)?sprite:sprite2;
             let box2 = (box1.boundingBoxType==sprite.boundingBoxType)?sprite2:sprite;
@@ -179,11 +212,15 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                     return true;
                 case "boxcircle":
                     //find closest point to circle center
-                    let Xn = Math.max(box1.x-box1.width/2, Math.min(box2.x, box1.x+box1.width/2));
-                    let Yn = Math.max(box1.y+box1.height/2, Math.min(box2.y, box1.y+box1.height/2));
-                    let R = Math.max(width2, height2);
+                    let R = Math.max(width2, height2)/2;
+                    let Xn = Math.max(box1.x-width/2, Math.min(box2.x, box1.x+width/2));
+                    let Yn = Math.max(box1.y-height/2, Math.min(box2.y, box1.y+height/2));
+                    if(Yn == box2.y){
+                        true;
+                    }
 
-                    if((box1.x-box2.x)**2 + (box1.y-box2.y)**2 <= ((R)/2)**2){
+
+                    if(((box2.x-Xn)**2 + (box2.y-Yn)**2)**0.5 <= (R)){
                         return true;
                     }
 
@@ -193,7 +230,7 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
                     let R1 =  Math.max(box1.width, box1.height);
                     let R2 =  Math.max(width2, height2);
 
-                    if(((box1.x-box2.x)**2 + (box1.y-box2.y)**2)**0.5 <= (R1/4 + R2/4)){
+                    if(((box1.x-box2.x)**2 + (box1.y-box2.y)**2)**0.5 <= (R1/2 + R2/2)){
                         return true;
                     }
                     return false;
@@ -222,7 +259,7 @@ createSprite: (x=0, y=0, scale=1, Width=50, Height=50, src='')=>{
     return sprite;
 },
 
-draw: (canvas, callback)=>{
+draw: (canvas)=>{
     globalSpriteData.ctx = document.getElementById(canvas).getContext("2d");
     let count = 0;
     globalSpriteData.spriteDrawList.forEach((e) => {
@@ -232,4 +269,4 @@ draw: (canvas, callback)=>{
 }
 }//library def end
 
-document.spriteLogic.globalSpriteData = globalSpriteData;
+spriteLogic.globalSpriteData = globalSpriteData;

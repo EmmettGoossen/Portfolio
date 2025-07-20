@@ -24,19 +24,23 @@
 
     
     <div id="bottom-view">
-        <div style="background: linear-gradient(180deg, rgba(0,0,0,0.7), rgba(0,0,100,0.2) 50%); height: 100%;">
+        <div style="background: linear-gradient(180deg, rgb(0,0,0), rgba(0,0,100,0.2) 50%, rgba(39, 40, 34,.7) 80%); height: 100%;">
             <div style="background-color: rgba(0, 0, 0, 0.0); backdrop-filter: blur(8px); padding-top: 5px; height: 100%;">
-                <button class="style-1" game="copter/" onclick="changeGame(event);">Copter</button>
-                <button class="style-1" game="Rift/" onclick="changeGame(event);">Rift</button>
+                <button class="style-1" game="copter/" onclick="changeGame(event);">
+                    Copter
+                    <img src="copter/img/copter.png" game="copter/" width="180" height="130" style="transform: scale(0.6); top:25px; right: 6px;">
+                </button>
+                <button class="style-1" game="Rift/" onclick="changeGame(event);">
+                    Rift
+                    <img src="Rift/img/bell.png" game="Rift/" width="112" height="192" style="transform: scale(-0.6, 0.6); right: 30px; top: 8;">
+                </button>
+                <button class="style-1">Mt.Where</button>
             </div>
         </div>
     </div>
     <script src="spriteLogic.js"></script>
     <script src="keyLogic.js"></script>
     <script>
-          //libraries
-        const spriteLogic = document.spriteLogic;
-        const keyLogic = document.keyLogic;
         const canvas = document.getElementById("channel").getContext("2d");
         document.gameStart = {
             'copter/': null,

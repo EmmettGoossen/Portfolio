@@ -1,5 +1,5 @@
 //key ditionary. provided by chatGPT
-document.keyLogic = {
+keyLogic = {
     keys: {
     // Letters
     a: [false, false], b: [false, false], c: [false, false], d: [false, false], e: [false, false],
@@ -13,17 +13,17 @@ document.keyLogic = {
     5: [false, false], 6: [false, false], 7: [false, false], 8: [false, false], 9: [false, false],
 
     // Function keys
-    F1: [false, false], F2: [false, false], F3: [false, false], F4: [false, false], F5: [false, false],
-    F6: [false, false], F7: [false, false], F8: [false, false], F9: [false, false], F10: [false, false],
-    F11: [false, false], F12: [false, false],
+    f1: [false, false], f2: [false, false], f3: [false, false], f4: [false, false], f5: [false, false],
+    f6: [false, false], f7: [false, false], f8: [false, false], f9: [false, false], f10: [false, false],
+    f11: [false, false], f12: [false, false],
 
     // Arrow keys
-    ArrowUp: [false, false], ArrowDown: [false, false], ArrowLeft: [false, false], ArrowRight: [false, false],
+    arrowup: [false, false], arrowdown: [false, false], arrowleft: [false, false], arrowright: [false, false],
 
     // Modifier and control keys
-    Shift: [false, false], Control: [false, false], Alt: [false, false], Meta: [false, false],
-    CapsLock: [false, false], Tab: [false, false], Enter: [false, false], Escape: [false, false],
-    Backspace: [false, false], Delete: [false, false],
+    shift: [false, false], control: [false, false], alt: [false, false], meta: [false, false],
+    capslock: [false, false], tab: [false, false], enter: [false, false], escape: [false, false],
+    backspace: [false, false], delete: [false, false],
 
     // Punctuation and symbols
     '`': [false, false], '-': [false, false], '=': [false, false], '[': [false, false], ']': [false, false],
@@ -33,27 +33,28 @@ document.keyLogic = {
     // Spacebar
     ' ': [false, false],
 
-    // Numpad keys (if needed)
-    NumLock: [false, false], Numpad0: [false, false], Numpad1: [false, false], Numpad2: [false, false],
-    Numpad3: [false, false], Numpad4: [false, false], Numpad5: [false, false], Numpad6: [false, false],
-    Numpad7: [false, false], Numpad8: [false, false], Numpad9: [false, false],
-    NumpadAdd: [false, false], NumpadSubtract: [false, false], NumpadMultiply: [false, false],
-    NumpadDivide: [false, false], NumpadDecimal: [false, false], NumpadEnter: [false, false],
+    // Numpad keys
+    numlock: [false, false], numpad0: [false, false], numpad1: [false, false], numpad2: [false, false],
+    numpad3: [false, false], numpad4: [false, false], numpad5: [false, false], numpad6: [false, false],
+    numpad7: [false, false], numpad8: [false, false], numpad9: [false, false],
+    numpadadd: [false, false], numpadsubtract: [false, false], numpadmultiply: [false, false],
+    numpaddivide: [false, false], numpaddecimal: [false, false], numpadenter: [false, false],
     },
 
+
     keyDown: (key) => {
-        if(document.keyLogic.keys[key][0]){
+        if(keyLogic.keys[key.toLowerCase()][0]){
             return true;
         }
         return false;
     },
 
     keyWentDown: (key) => {
-        if(document.keyLogic.keys[key][1]){
+        if(keyLogic.keys[key.toLowerCase()][1]){
             return false;
         }
-        if(document.keyLogic.keys[key][0]){
-            document.keyLogic.keys[key][1] = true;
+        if(keyLogic.keys[key.toLowerCase()][0]){
+            keyLogic.keys[key.toLowerCase()][1] = true;
             return true;
         }
         return false;
@@ -62,10 +63,10 @@ document.keyLogic = {
 
 
 document.onkeydown = (e) => {
-    document.keyLogic.keys[e.key][0] = true;
+    keyLogic.keys[e.key.toLowerCase()][0] = true;
 };
 
 document.onkeyup = (e) => {
-    document.keyLogic.keys[e.key][0] = false;
-    document.keyLogic.keys[e.key][1] = false;
+    keyLogic.keys[e.key.toLowerCase()][0] = false;
+    keyLogic.keys[e.key.toLowerCase()][1] = false;
 };
